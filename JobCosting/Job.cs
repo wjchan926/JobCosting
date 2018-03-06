@@ -11,18 +11,15 @@ namespace JobCosting
     class Job
     {
         // Queried
-        public int salesOrder;
+        public string salesOrder;
         public string customerName;
         public string partNumber;
         public string salesRep;
         public decimal freight;
         public decimal marlinFreight;
         public decimal miscToolingCost;
-        public bool isFullyInvoiced;
-        public bool isManuallyClosed;
-        public decimal averageCost;
+        public decimal productCost;
         public decimal amountActualRevenue;
-        public decimal amountActualCost;
 
         // Calculated
         public double grossMargin;
@@ -38,7 +35,7 @@ namespace JobCosting
 
         }
  
-        public Job(int salesOrder, string partNumber)
+        public Job(string salesOrder, string partNumber)
         {
             this.salesOrder = salesOrder;
             this.partNumber = partNumber;

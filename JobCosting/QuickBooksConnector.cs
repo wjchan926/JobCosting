@@ -11,32 +11,62 @@ namespace JobCosting
     class QuickBooksConnector
     {
         public static OdbcConnection con { get; private set; }
-        public static DataTable result_SalesOrder { get; private set; }
-        public static DataTable result_ItemInventoryAssembly { get; private set; }
+        public static OdbcConnection conDSNLess { get; private set; }
+        public static DataTable result_Cost { get; private set; }
+        public static DataTable result_SalesOrder { get; private set; }  
       //  public static DataTable result_StoredProcedure { get; private set; }
 
         public QuickBooksConnector()
         {
-            result_SalesOrder = new DataTable();
-            result_ItemInventoryAssembly = new DataTable();            
+            result_Cost = new DataTable();
+            result_SalesOrder = new DataTable();             
         }
 
         /// <summary>
-        /// Conenct OdbcConnection to QuickBooks
+        /// Connect OdbcConnection to QuickBooks
         /// </summary>
         public void connect()
         {
+            // Try to create QODBC Connection
             try
             {
                 con = new OdbcConnection("Dsn=QuickBooks Data");
+
                 con.Open(); // Open Connection, Required QB to be open
-                Console.WriteLine("Connected to QB");
+                Console.WriteLine("Connected to QB Thru QODBC");
             }
             catch (Exception dbConnectionEx)
             {
                 if (con != null)
                 {
                     con.Dispose();
+                }
+
+                Console.WriteLine(dbConnectionEx.Message);
+                throw;
+            }
+
+            // Try to Create DNSLess ODBC Connection
+            try
+            {
+                string fileDSN = @"Q:\Imported Company File 7-25-17\Marlin Steel Wire Products, LLC.QBW.DSN";
+                conDSNLess = new OdbcConnection("ODBC; Driver={QB SQL Anywhere}; " +
+                    "UID=JobCosting; " +
+                    "PWD=M@rl1n; " +
+                    "DatabaseName = 504f8624078240a19834ca08f0c7468e; " +
+                    "ServerName=QB_MSW-FP1_27; " +
+                    "AutoStop=NO; Integrated = NO; " +
+                    "FILEDSN=" + fileDSN + ";" +
+                    "Debug=NO; DisableMultiRowFetch=NO; CommLinks='TCPIP{HOST=192.168.1.7:55373}'");
+
+                conDSNLess.Open(); // Open Connection, Required QB to be open
+                Console.WriteLine("Connected to QB Thru DSNLess Connection");
+            }
+            catch (Exception dbConnectionEx)
+            {
+                if (conDSNLess != null)
+                {
+                    conDSNLess.Dispose();
                 }
 
                 Console.WriteLine(dbConnectionEx.Message);
@@ -55,6 +85,7 @@ namespace JobCosting
         public void disconnect()
         {
             con.Close(); // Close Connection
+            conDSNLess.Close(); // Close Connection
             Console.WriteLine("Disconnected from QB");
         }
 
@@ -84,57 +115,66 @@ namespace JobCosting
         /// Nested class for hyperthreading the queries
         /// </summary>
         public static class ThreadQuery
-        {            
+        {
+
+            public static void threadCost()
+            {
+                Console.WriteLine("Cost Query Started");
+                // Create SQL statement for grabbing table data
+                // Gets the Actual Material Cost from QuickBooks
+                OdbcDataAdapter dAdapter = new OdbcDataAdapter(
+                    "SELECT name, unit_cost_amt, is_hidden " +
+                    "FROM QBReportAdminGroup.v_lst_item ",
+                    conDSNLess);
+
+                // Store query results into DataTable Object
+                dAdapter.Fill(result_Cost);
+
+                // Set Primary Key
+                DataColumn[] key = new DataColumn[1];
+                key[0] = result_Cost.Columns["name"];
+                result_Cost.PrimaryKey = key;
+
+                Console.WriteLine("Cost Table Filled");
+            }
+
             /// <summary>
-            /// Fills result_SalesOrder with the SalesOrder Table from QB
+            /// Fills result_SalesOrder with the ODBC DSNLess Connections Tables from QB
             /// </summary>
             public static void threadQuerySalesOrder()
             {
 
                 Console.WriteLine("SO Table Query Started");
                 // Create SQL statement for grabbing table data
-                OdbcDataAdapter dAdapter = new OdbcDataAdapter(
-                    "SELECT CustomerRefFullName, SalesRepRefFullName, RefNumber, IsFullyInvoiced, IsManuallyClosed " +
-                    "FROM SalesOrder ",
-                    con);
+                OdbcDataAdapter dAdapter = new OdbcDataAdapter( 
+                    "SELECT QBReportAdminGroup.v_lst_customer_fullname.name as 'SalesOrder', QBReportAdminGroup.v_lst_customer_fullname.full_name as 'FullName', QBReportAdminGroup.v_lst_sales_rep.initials as 'Rep'" +
+                    "FROM QBReportAdminGroup.v_lst_customer INNER JOIN QBReportAdminGroup.v_lst_customer_fullname ON QBReportAdminGroup.v_lst_customer.name = QBReportAdminGroup.v_lst_customer_fullname.name "+
+                    "INNER JOIN QBReportAdminGroup.v_lst_sales_rep ON QBReportAdminGroup.v_lst_customer.sales_rep_id = QBReportAdminGroup.v_lst_sales_rep.id",
+                    conDSNLess);
 
                 // Store query results into DataTable Object
                 dAdapter.Fill(result_SalesOrder);
-
-                // Set Primary Key
-                DataColumn[] key = new DataColumn[1];
-                key[0] = result_SalesOrder.Columns["RefNumber"];
-                result_SalesOrder.PrimaryKey = key;
-
+                     
                 Console.WriteLine("SO Table Filled");
          
             }
-            
-            /// <summary>
-            /// Fills result_ItemInventoryAssembly with ItemInventoryAssembly Table from QB
-            /// </summary>
-            public static void threadQueryItemInventoryAssembly()
+
+            public static void tableWriter(DataTable dataTable)
             {
-                Console.WriteLine("Item Table Query Started");
-
-                // Create SQL statement for grabbing table data         
-                OdbcDataAdapter dAdapter = new OdbcDataAdapter(
-                    "SELECT FullName, AverageCost, IsActive " +
-                    "FROM ItemInventoryAssembly " +
-                    "WHERE IsActive=True", 
-                    con);
-
-                // Store query results into DataTable Object
-                dAdapter.Fill(result_ItemInventoryAssembly);
-
-                // Set Primary Key
-                DataColumn[] key = new DataColumn[1];
-                key[0] = result_ItemInventoryAssembly.Columns["FullName"];
-                result_ItemInventoryAssembly.PrimaryKey = key;
-
-                Console.WriteLine("Item Table Filled");   
+                DataTableReader dataTableReader = new DataTableReader(dataTable);
+                // Read table, while there is still a record
+                while (dataTableReader.Read())
+                {
+                    try
+                    {
+                        Console.WriteLine(dataTableReader.GetString(0));
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.Message);
+                    }
+                }
             }
-
 
             /// <summary>
             /// Public overloaded method that accepts an object ofr ParameterizedThreadStart
@@ -146,7 +186,7 @@ namespace JobCosting
             }
 
             /// <summary>
-            /// Runs the stored procedure Report in QB for the job
+            /// Runs the stored procedure Report in QB for the job.  This needs ODBC conneciton, unfortunately.
             /// </summary>
             /// <param name="jobList"></param>
             private static void threadStoredProcedure(Job job)
@@ -155,12 +195,12 @@ namespace JobCosting
                 // Create SQL statement for grabbing table data
                 DataTable result_StoredProcedure = new DataTable();
 
-                try
+                try // Try to query
                 {
                     string customer = job.customerName;
                     OdbcDataAdapter dAdapter = new OdbcDataAdapter(
                       "sp_report JobProfitabilityDetail " +
-                      "show Label, AmountActualCost, AmountActualRevenue, AmountDifferenceActual " +
+                      "show RowData, AmountActualCost, AmountActualRevenue, AmountDifferenceActual " +
                       "parameters DateMacro = 'All', EntityFilterFullNames = '"+ customer + "'",
                       con);                    
 
@@ -168,40 +208,44 @@ namespace JobCosting
                     dAdapter.Fill(result_StoredProcedure);
 
                     // Set Primary Key
-                    // Replace Null Values in Label Column
+                    // Replace Null Values in RowData Column
                     // Stored Procedure $ are of type Decimal
                     foreach(DataRow row in result_StoredProcedure.Rows)
                     {
-                        if (row["Label"] is System.DBNull)
+                        if (row["RowData"] is System.DBNull)
                         {
-                            row["Label"] = "NO DATA" + result_StoredProcedure.Rows.IndexOf(row);
-                        }
+                            row["RowData"] = "NO DATA" + result_StoredProcedure.Rows.IndexOf(row);
+                        }           
                     }
 
-                    DataColumn[] key = new DataColumn[1];
-                    key[0] = result_StoredProcedure.Columns["Label"]; 
+                    DataColumn[] key = new DataColumn[2];
+                    key[0] = result_StoredProcedure.Columns["RowData"];        
                     result_StoredProcedure.PrimaryKey = key;
 
                     // Map data to job objects
-                    job.amountActualCost = (decimal)result_StoredProcedure.Rows.Find("TOTAL")["AmountActualCost_1"];
-                    job.amountActualRevenue = (decimal)result_StoredProcedure.Rows.Find("TOTAL")["AmountActualRevenue_1"];
-                    try
+                    job.amountActualRevenue = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count-1]["AmountActualRevenue_1"];
+                    try // Try to Map freight if found
                     {
-                        job.freight = (decimal)result_StoredProcedure.Rows.Find("Freight (Freight Out)")["AmountActualRevenue_1"];
+                        job.freight = (decimal)result_StoredProcedure.Rows.Find("Freight")["AmountActualRevenue_1"];
+                        job.marlinFreight = job.freight / (decimal)1.75;                        
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        
+                        Console.Write(e.Message);
+                        Console.WriteLine(" No frieght data found for: " + job.customerName);
                     }
-                    job.marlinFreight = job.freight / (decimal)1.75;
-                    //job.miscToolingCost = (decimal)result_StoredProcedure.Rows.Find("MISC TOOLING(One - time charge - engineering time, check fixtures, tooling, qualit...")["AmountActualRevenue_1"];
 
-                    //Console.WriteLine(job.customerName);
-                    //Console.WriteLine(job.averageCost);
-                    //Console.WriteLine(job.amountActualCost);
-                    //Console.WriteLine(job.amountActualRevenue);
-                      
+                    try // Try to map msc Tooling if found
+                    {
+                        job.miscToolingCost = (decimal)result_StoredProcedure.Rows.Find("MISC TOOLING")["AmountActualRevenue_1"];
+                    }
+                    catch (Exception e)
+                    {
+                        Console.Write(e.Message);
+                        Console.WriteLine(" No tooling data found for: " + job.customerName);
+                    }
                 }
+
                 catch (OdbcException objEx)
                 {
                     Console.WriteLine(objEx.Message);
