@@ -8,37 +8,28 @@ using System.Collections;
 
 namespace JobCosting
 {
-    class Job
+    public sealed class Job : SuperJob
     {
-        // Queried
-        public string salesOrder;
-        public string customerName;
-        public string partNumber;
-        public string salesRep;
-        public decimal freight;
-        public decimal marlinFreight;
-        public decimal miscToolingCost;
-        public decimal productCost;
-        public decimal amountActualRevenue;
+        /// <summary>
+        /// Private defualt constructor for Job Object.  Job must be intialezed with certain fields.
+        /// </summary>
+        private Job() : base() { }
 
-        // Calculated
-        public double grossMargin;
-        public double unitHigh;
-        public double unitLow;
-        public double unitFloor;
-        public double calcCost;
-        public double calcRevenue;
-        public long orderQuantity;
+        /// <summary>
+        /// Constructor for Job object with 2 arguments
+        /// </summary>
+        /// <param name="salesOrder"></param> Alpha portion of the sales order, extract from Excel
+        /// <param name="partNumber"></param> Part Number, extract from Excel
+        public Job(string salesOrder, string partNumber) : base(salesOrder, partNumber) { }
 
-        public Job()
-        {
+        /// <summary>
+        /// Construct for Job object with 3 arguements
+        /// </summary>
+        /// <param name="salesOrder"></param> Alpha portion of the sales order, extract from Excel
+        /// <param name="partNumber"></param> Part Number, extract from Excel
+        /// <param name="orderQuantitiy"></param> Order quantiy, extracted from excel
+        public Job(string salesOrder, string partNumber, long orderQuantity) : base(salesOrder, partNumber, orderQuantity) { }
+        
 
-        }
- 
-        public Job(string salesOrder, string partNumber)
-        {
-            this.salesOrder = salesOrder;
-            this.partNumber = partNumber;
-        }
     }    
 }

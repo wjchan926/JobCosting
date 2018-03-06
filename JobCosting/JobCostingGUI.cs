@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace JobCosting
 {
-    public partial class Form1 : Form
+    public partial class JobCostingGUI : Form
     {
-        public Form1()
+        public JobCostingGUI()
         {
             InitializeComponent();
         }

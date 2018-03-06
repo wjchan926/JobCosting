@@ -48,13 +48,14 @@ namespace JobCosting
             Job j2 = new Job("BCPN", "02343001-81");
             Job j3 = new Job("BDAB", "02240001-81");
             Job j4 = new Job("BDFJ", "01038014-38");
- 
+            Job j5 = new Job("BCPW", "01038013-38");
+
             jobList.Add(j1.salesOrder, j1);
             jobList.Add(j2.salesOrder, j2);
             jobList.Add(j3.salesOrder, j3);
             jobList.Add(j4.salesOrder, j4);
-
-
+            jobList.Add(j5.salesOrder, j5);
+            
             // Add All jobs highlighted in excel to dicitonary
             /**
              * 

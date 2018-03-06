@@ -14,7 +14,6 @@ namespace JobCosting
         public static OdbcConnection conDSNLess { get; private set; }
         public static DataTable result_Cost { get; private set; }
         public static DataTable result_SalesOrder { get; private set; }  
-      //  public static DataTable result_StoredProcedure { get; private set; }
 
         public QuickBooksConnector()
         {
@@ -110,7 +109,6 @@ namespace JobCosting
             }
         }
 
-
         /// <summary>
         /// Nested class for hyperthreading the queries
         /// </summary>
@@ -182,7 +180,7 @@ namespace JobCosting
             /// <param name="joblist"></param>
             public static void threadStoredProcedure(object job)
             {    
-                threadStoredProcedure((Job)job);
+                threadStoredProcedure((SuperJob)job);
             }
 
             /// <summary>
@@ -218,16 +216,21 @@ namespace JobCosting
                         }           
                     }
 
-                    DataColumn[] key = new DataColumn[2];
+                    DataColumn[] key = new DataColumn[1];
                     key[0] = result_StoredProcedure.Columns["RowData"];        
                     result_StoredProcedure.PrimaryKey = key;
 
                     // Map data to job objects
+                    if(result_StoredProcedure.Rows.Find(job.partNumber)["RowData"] != null)
+                    {
+                        job.badCostData = (decimal)result_StoredProcedure.Rows.Find(job.partNumber)["RowData"];
+                    }
+
+                    job.amountActualCost = (double)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count - 1]["AmounttActualCost_1"];
                     job.amountActualRevenue = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count-1]["AmountActualRevenue_1"];
                     try // Try to Map freight if found
                     {
-                        job.freight = (decimal)result_StoredProcedure.Rows.Find("Freight")["AmountActualRevenue_1"];
-                        job.marlinFreight = job.freight / (decimal)1.75;                        
+                        job.freight = (decimal)result_StoredProcedure.Rows.Find("Freight")["AmountActualRevenue_1"];                     
                     }
                     catch (Exception e)
                     {
