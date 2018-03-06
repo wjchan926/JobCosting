@@ -17,7 +17,7 @@ namespace JobCosting
         /// </summary>
         public override void setAmountActualCost()
         {            
-            amountActualCost = amountActualCost + (double)productCost * (double)orderQuantity;          
+            amountActualCost = amountActualCost + productCost * orderQuantity;          
         }
     }
 }

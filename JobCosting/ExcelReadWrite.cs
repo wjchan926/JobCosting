@@ -19,7 +19,7 @@ namespace JobCosting
 
         /// <summary>
         /// Default contructor for ExcelFileReaer.
-        /// Called with OPen Job Costing Document GUI Method.
+        /// Called with Open Job Costing Document GUI Method.
         /// </summary>
         public ExcelReadWrite()
         {
@@ -56,11 +56,16 @@ namespace JobCosting
         /// Closes workbook and applicaiton.  Releases Objects
         /// Called with the Save and Close GUI Method
         /// </summary>
-        public void release()
+        public void close()
         {
             myBook.Close(true, null, null);
             myApp.Quit();
 
+            release();
+        }
+
+        public void release()
+        {
             Marshal.ReleaseComObject(mySheet);
             Marshal.ReleaseComObject(myBook);
             Marshal.ReleaseComObject(myApp);
@@ -90,20 +95,20 @@ namespace JobCosting
             // Determine which sheet is open
             mySheet = myApp.ActiveSheet;
 
-            foreach (Excel.Range row in range.Rows)
+            foreach (Excel.Range range in range.Rows)
             {
-                mySheet.Range[ExcelColumn.salesRep][row] = job.salesRep;
-                mySheet.Range[ExcelColumn.actualCost][row] = job.amountActualCost;
-                mySheet.Range[ExcelColumn.actualRevenue][row] = job.amountActualRevenue;
-                mySheet.Range[ExcelColumn.difference][row] = job.difference;
-                mySheet.Range[ExcelColumn.grossMargin][row] = job.grossMargin;
-                mySheet.Range[ExcelColumn.unitHigh][row] = job.unitHigh;
-                mySheet.Range[ExcelColumn.unitMed][row] = job.unitMed;
-                mySheet.Range[ExcelColumn.unitLow][row] = job.unitLow;
-                mySheet.Range[ExcelColumn.unitFloor][row] = job.unitFloor;
-                mySheet.Range[ExcelColumn.freight][row] = job.freight;
-                mySheet.Range[ExcelColumn.marlinFreight][row] = job.marlinFreight;
-                mySheet.Range[ExcelColumn.miscTooling][row] = job.miscToolingCost;
+                mySheet.Cells[range.Row, ExcelColumn.salesRep] = job.salesRep;
+                mySheet.Cells[range.Row, ExcelColumn.actualCost] = job.amountActualCost;
+                mySheet.Cells[range.Row, ExcelColumn.actualRevenue] = job.amountActualRevenue;
+                mySheet.Cells[range.Row, ExcelColumn.difference] = job.difference;
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin] = job.grossMargin;
+                mySheet.Cells[range.Row, ExcelColumn.unitHigh] = job.unitHigh;
+                mySheet.Cells[range.Row, ExcelColumn.unitMed] = job.unitMed;
+                mySheet.Cells[range.Row, ExcelColumn.unitLow] = job.unitLow;
+                mySheet.Cells[range.Row, ExcelColumn.unitFloor] = job.unitFloor;
+                mySheet.Cells[range.Row, ExcelColumn.freight] = job.freight;
+                mySheet.Cells[range.Row, ExcelColumn.marlinFreight] = job.marlinFreight;
+                mySheet.Cells[range.Row, ExcelColumn.miscTooling] = job.miscToolingCost;
             }
         }
     }

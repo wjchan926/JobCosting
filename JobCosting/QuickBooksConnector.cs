@@ -187,7 +187,7 @@ namespace JobCosting
             /// Runs the stored procedure Report in QB for the job.  This needs ODBC conneciton, unfortunately.
             /// </summary>
             /// <param name="jobList"></param>
-            private static void threadStoredProcedure(Job job)
+            private static void threadStoredProcedure(SuperJob job)
             {
                 Console.WriteLine("Stored Procedure Started");
                 // Create SQL statement for grabbing table data
@@ -223,10 +223,10 @@ namespace JobCosting
                     // Map data to job objects
                     if(result_StoredProcedure.Rows.Find(job.partNumber)["RowData"] != null)
                     {
-                        job.badCostData = (decimal)result_StoredProcedure.Rows.Find(job.partNumber)["RowData"];
+                        job.badCostData = (decimal)result_StoredProcedure.Rows.Find(job.partNumber)["AmountActualCost_1"];
                     }
 
-                    job.amountActualCost = (double)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count - 1]["AmounttActualCost_1"];
+                    job.amountActualCost = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count - 1]["AmountActualCost_1"];
                     job.amountActualRevenue = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count-1]["AmountActualRevenue_1"];
                     try // Try to Map freight if found
                     {

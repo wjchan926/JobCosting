@@ -5,12 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Data;
+using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace JobCosting
 {
-    class JobCostingDriver
+    static class JobCostingDriver
     {
         public static void Main()
+        {
+            Application.Run(new JobCostingGUI());
+        }
+
+        public static Dictionary<string,SuperJob> CostingDriver(ExcelReadWrite jobCostingDoc)
         {
             Console.WriteLine("Main() Starting");
                                     
@@ -23,7 +30,6 @@ namespace JobCosting
             // Multithread objects
             Thread threadSO = new Thread(new ThreadStart(QuickBooksConnector.ThreadQuery.threadQuerySalesOrder));
             Thread threadCost = new Thread(new ThreadStart(QuickBooksConnector.ThreadQuery.threadCost));
-
 
             // Start threads
             try
@@ -43,35 +49,47 @@ namespace JobCosting
             // For test puposes only
             // Create List to hold Job Objects
             // Key Should be SO#
-            Dictionary<string, Job> jobList = new Dictionary<string, Job>();
-            Job j1 = new Job("BCLF", "02328007-38");
-            Job j2 = new Job("BCPN", "02343001-81");
-            Job j3 = new Job("BDAB", "02240001-81");
-            Job j4 = new Job("BDFJ", "01038014-38");
-            Job j5 = new Job("BCPW", "01038013-38");
+            Dictionary<string, SuperJob> jobList = new Dictionary<string, SuperJob>();
 
-            jobList.Add(j1.salesOrder, j1);
-            jobList.Add(j2.salesOrder, j2);
-            jobList.Add(j3.salesOrder, j3);
-            jobList.Add(j4.salesOrder, j4);
-            jobList.Add(j5.salesOrder, j5);
-            
             // Add All jobs highlighted in excel to dicitonary
             /**
-             * 
-             * Get all the sales orders and part numbers from Rows highlighted in excel using excel reader class
-             * Create job objects with Sales Orders and PT#
-             * Add to jobList
-             * 
-             * */
+              * 
+              * Get all the sales orders and part numbers from Rows highlighted in excel using excel reader class
+              * Create job objects with Sales Orders and PT#
+              * Add to jobList
+              * 
+              * */
+            foreach (Excel.Range range in jobCostingDoc.range.Rows)
+            {
+                if(jobCostingDoc.mySheet.Name != "StockingOrders")
+                {                   
+                    string soStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0,4);
+                    string partNumberStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
+                    long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;
 
+                    Job job = new Job(soStr, partNumberStr, orderQtyLong);
+
+                    jobList.Add(job.salesOrder, job);
+                }
+                else
+                {
+                    string soStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0, 4);
+                    string partNumberStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
+                    long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;
+
+                    StockJob job = new StockJob(soStr, partNumberStr, orderQtyLong);
+
+                    jobList.Add(job.salesOrder, job);
+                }
+            }
+ 
             // Map values from tables to job objects
             // Store all threads in list so we can check if closed.
             List<Thread> threadList = new List<Thread>();
 
             try
             {
-                foreach (KeyValuePair<string, Job> entry in jobList)
+                foreach (KeyValuePair<string, SuperJob> entry in jobList)
                 {
                     // Find Row in Data Tables                    
                     string s = "SalesOrder='" + entry.Key + "'";
@@ -113,24 +131,11 @@ namespace JobCosting
 
             // Disconnect
             QBConnector.disconnect();
-
-            // Write to excel, maybe with excel writer class
-            // Test Print
-            foreach (Job job in jobList.Values)
-            {
-                Console.WriteLine(job.customerName);
-                Console.WriteLine(job.partNumber);
-                Console.WriteLine(job.salesOrder);
-                Console.WriteLine(job.salesRep);
-                Console.WriteLine(job.productCost);
-                Console.WriteLine(job.amountActualRevenue);
-                Console.WriteLine(job.miscToolingCost);
-                Console.WriteLine(job.freight);
-                Console.WriteLine("\n");
-
-            }
-
+            
             Console.WriteLine("End of Main");
+
+            return jobList;
+          
             
         }
 

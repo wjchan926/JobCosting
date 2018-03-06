@@ -23,7 +23,7 @@ namespace JobCosting
         public decimal badCostData { get; set; }
 
         // Calculated
-        public double amountActualCost { get; set; } = 0;
+        public decimal amountActualCost { get; set; } = 0;
         public double marlinFreight { get; protected set; } = 0;
         public double grossMargin { get; protected set; } = 0;
         public double unitHigh { get; protected set; } = 0;
@@ -67,12 +67,12 @@ namespace JobCosting
 
         public virtual void setAmountActualCost()
         {
-          amountActualCost = amountActualCost - (double)badCostData + (double)productCost * (double)orderQuantity;
+          amountActualCost = amountActualCost - badCostData + productCost * orderQuantity;
         }
 
         public void setDifference()
         {
-            difference = (double)amountActualRevenue - amountActualCost;
+            difference = (double)amountActualRevenue - (double)amountActualCost;
         }
 
         public void setGrossMargin()
