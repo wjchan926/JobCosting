@@ -53,7 +53,7 @@ namespace JobCosting
         /// <summary>
         /// Sets all the calculate values, calls all the calculation methods
         /// </summary>
-        public void calculateFields()
+        public virtual void calculateFields()
         {
             setAmountActualCost();
             setDifference();

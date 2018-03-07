@@ -221,38 +221,52 @@ namespace JobCosting
                     result_StoredProcedure.PrimaryKey = key;
 
                     // Map data to job objects
-                    if(result_StoredProcedure.Rows.Find(job.partNumber)["RowData"] != null)
-                    {
-                        job.badCostData = (decimal)result_StoredProcedure.Rows.Find(job.partNumber)["AmountActualCost_1"];
-                    }
-
-                    job.amountActualCost = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count - 1]["AmountActualCost_1"];
-                    job.amountActualRevenue = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count-1]["AmountActualRevenue_1"];
-                    try // Try to Map freight if found
-                    {
-                        job.freight = (decimal)result_StoredProcedure.Rows.Find("Freight")["AmountActualRevenue_1"];                     
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Write(e.Message);
-                        Console.WriteLine(" No frieght data found for: " + job.customerName);
-                    }
-
-                    try // Try to map msc Tooling if found
-                    {
-                        job.miscToolingCost = (decimal)result_StoredProcedure.Rows.Find("MISC TOOLING")["AmountActualRevenue_1"];
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Write(e.Message);
-                        Console.WriteLine(" No tooling data found for: " + job.customerName);
-                    }
+                    mapData(job, result_StoredProcedure);
                 }
 
                 catch (OdbcException objEx)
                 {
                     Console.WriteLine(objEx.Message);
                 }                
+            }
+
+            private static void mapData(SuperJob job, DataTable result_StoredProcedure)
+            {
+                try // Try to map bad cost data
+                {
+                    job.badCostData = (decimal)result_StoredProcedure.Rows.Find(job.partNumber)["AmountActualCost_1"];
+                }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                    Console.WriteLine(" No material data found for: " + job.customerName);
+                }
+
+                // Map total Costs
+                job.amountActualCost = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count - 1]["AmountActualCost_1"];
+
+                // Map total Revenue
+                job.amountActualRevenue = (decimal)result_StoredProcedure.Rows[result_StoredProcedure.Rows.Count - 1]["AmountActualRevenue_1"];
+
+                try // Try to Map freight if found
+                {
+                    job.freight = (decimal)result_StoredProcedure.Rows.Find("Freight")["AmountActualRevenue_1"];
+                }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                    Console.WriteLine(" No frieght data found for: " + job.customerName);
+                }
+
+                try // Try to map msc Tooling if found
+                {
+                    job.miscToolingCost = (decimal)result_StoredProcedure.Rows.Find("MISC TOOLING")["AmountActualRevenue_1"];
+                }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                    Console.WriteLine(" No tooling data found for: " + job.customerName);
+                }
             }
         }
 

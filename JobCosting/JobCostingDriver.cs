@@ -7,6 +7,7 @@ using System.Threading;
 using System.Data;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace JobCosting
 {
@@ -17,8 +18,13 @@ namespace JobCosting
             Application.Run(new JobCostingGUI());
         }
 
-        public static Dictionary<string,SuperJob> CostingDriver(ExcelReadWrite jobCostingDoc)
+        public static Dictionary<string,SuperJob> CostingDriver(ExcelRead jobCostingDoc)
         {
+            if (jobCostingDoc == null)
+            {
+                jobCostingDoc.reInitialize();
+            }
+
             Console.WriteLine("Main() Starting");
                                     
             // Create Conneciton Object
@@ -59,14 +65,14 @@ namespace JobCosting
               * Add to jobList
               * 
               * */
-            foreach (Excel.Range range in jobCostingDoc.range.Rows)
+            foreach (Excel.Range range in jobCostingDoc.myRange.Rows)
             {
                 if(jobCostingDoc.mySheet.Name != "StockingOrders")
                 {                   
                     string soStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0,4);
                     string partNumberStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
                     long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;
-
+                    
                     Job job = new Job(soStr, partNumberStr, orderQtyLong);
 
                     jobList.Add(job.salesOrder, job);
@@ -75,10 +81,10 @@ namespace JobCosting
                 {
                     string soStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0, 4);
                     string partNumberStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
-                    long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;
+                    long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;        
 
                     StockJob job = new StockJob(soStr, partNumberStr, orderQtyLong);
-
+                    job.expectedRevenue = (double)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.expectedAmount]).Value;
                     jobList.Add(job.salesOrder, job);
                 }
             }
@@ -129,9 +135,17 @@ namespace JobCosting
                 thread.Join();
             }
 
+
+
             // Disconnect
             QBConnector.disconnect();
-            
+
+            // Finish calculations for jobs    
+            foreach (KeyValuePair<string, SuperJob> entry in jobList)
+            {  
+                entry.Value.calculateFields();
+            }
+
             Console.WriteLine("End of Main");
 
             return jobList;

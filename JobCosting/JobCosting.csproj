@@ -78,7 +78,8 @@
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
     <Compile Include="ExcelColumn.cs" />
-    <Compile Include="ExcelReadWrite.cs" />
+    <Compile Include="ExcelRead.cs" />
+    <Compile Include="ExcelWrite.cs" />
     <Compile Include="JobCostingGUI.cs">
       <SubType>Form</SubType>
     </Compile>

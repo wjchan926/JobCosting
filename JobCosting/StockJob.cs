@@ -8,6 +8,8 @@ namespace JobCosting
 {
     public sealed class StockJob : SuperJob
     {
+        public double expectedRevenue { get; set; } = 0;
+
         private StockJob() : base() { }
 
         public StockJob(string salesOrder, string partNumber, long orderQuantity) : base(salesOrder, partNumber, orderQuantity) { }
@@ -18,6 +20,17 @@ namespace JobCosting
         public override void setAmountActualCost()
         {            
             amountActualCost = amountActualCost + productCost * orderQuantity;          
+        }
+
+        public void setAmmountActualRevenue()
+        {
+            amountActualRevenue = (decimal)expectedRevenue;
+        }
+
+        public override void calculateFields()
+        {
+            setAmmountActualRevenue();
+            base.calculateFields();
         }
     }
 }

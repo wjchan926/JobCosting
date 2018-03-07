@@ -14,6 +14,7 @@ namespace JobCosting
         public static string partNumber { get; private set; } = "A";
         public static string salesOrder { get; private set; } = "B";
         public static string orderQuantity { get; private set; } = "H";
+        public static string expectedAmount { get; private set; } = "K";
         public static string salesRep { get; private set; } = "U";
         public static string actualCost { get; private set; } = "V";
         public static string actualRevenue { get; private set; } = "W";

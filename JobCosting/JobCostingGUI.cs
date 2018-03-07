@@ -12,7 +12,7 @@ namespace JobCosting
 {
     public partial class JobCostingGUI : Form
     {
-        ExcelReadWrite jobCostingDoc;
+        ExcelRead jobCostingDoc;
 
         public JobCostingGUI()
         {
@@ -24,25 +24,41 @@ namespace JobCosting
             
         }
 
-        private void cancel_Click(object sender, EventArgs e)
-        {
-            jobCostingDoc.release();
-        }
-
         private void openbtn_Click(object sender, EventArgs e)
         {
-            jobCostingDoc = new ExcelReadWrite();
+            jobCostingDoc = new ExcelRead();
+            jobCostingDoc.openDoc();
         }
 
         private void analyzebtn_Click(object sender, EventArgs e)
         {
+            if (jobCostingDoc.myApp == null)
+            {
+                jobCostingDoc = new ExcelRead();        
+            }
+
+            jobCostingDoc.reInitialize();
             jobCostingDoc.setRange();
-            JobCostingDriver.CostingDriver(jobCostingDoc);           
+            Dictionary<string, SuperJob> jobList = JobCostingDriver.CostingDriver(jobCostingDoc);
+            ExcelWrite.writeJobData(jobList, jobCostingDoc.myRange); 
         }
 
         private void closebtn_Click(object sender, EventArgs e)
         {
+            if (jobCostingDoc.myApp == null)
+            {
+                jobCostingDoc = new ExcelRead();
+
+            }
+            jobCostingDoc.reInitialize();
+
             jobCostingDoc.close();
+        }
+
+        private void exitbtn_Click(object sender, EventArgs e)
+        {
+            if (jobCostingDoc != null) { jobCostingDoc.release(); }
+            Application.Exit();
         }
     }
 }

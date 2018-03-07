@@ -31,7 +31,7 @@
             this.openbtn = new System.Windows.Forms.Button();
             this.analyzebtn = new System.Windows.Forms.Button();
             this.closebtn = new System.Windows.Forms.Button();
-            this.cancel = new System.Windows.Forms.Button();
+            this.exitbtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // openbtn
@@ -65,25 +65,24 @@
             this.closebtn.UseVisualStyleBackColor = true;
             this.closebtn.Click += new System.EventHandler(this.closebtn_Click);
             // 
-            // cancel
+            // exitbtn
             // 
-            this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancel.Location = new System.Drawing.Point(13, 100);
-            this.cancel.Name = "cancel";
-            this.cancel.Size = new System.Drawing.Size(174, 23);
-            this.cancel.TabIndex = 3;
-            this.cancel.Text = "Cancel";
-            this.cancel.UseVisualStyleBackColor = true;
-            this.cancel.Click += new System.EventHandler(this.cancel_Click);
+            this.exitbtn.Location = new System.Drawing.Point(13, 99);
+            this.exitbtn.Name = "exitbtn";
+            this.exitbtn.Size = new System.Drawing.Size(174, 23);
+            this.exitbtn.TabIndex = 4;
+            this.exitbtn.Text = "Close Application";
+            this.exitbtn.UseVisualStyleBackColor = true;
+            this.exitbtn.Click += new System.EventHandler(this.exitbtn_Click);
             // 
             // JobCostingGUI
             // 
             this.AcceptButton = this.analyzebtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cancel;
-            this.ClientSize = new System.Drawing.Size(198, 130);
-            this.Controls.Add(this.cancel);
+            this.ClientSize = new System.Drawing.Size(198, 131);
+            this.ControlBox = false;
+            this.Controls.Add(this.exitbtn);
             this.Controls.Add(this.closebtn);
             this.Controls.Add(this.analyzebtn);
             this.Controls.Add(this.openbtn);
@@ -100,7 +99,7 @@
         private System.Windows.Forms.Button openbtn;
         private System.Windows.Forms.Button analyzebtn;
         private System.Windows.Forms.Button closebtn;
-        private System.Windows.Forms.Button cancel;
+        private System.Windows.Forms.Button exitbtn;
     }
 }
 
