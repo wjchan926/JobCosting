@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace JobCosting
 {
     public partial class JobCostingGUI : Form
     {
-        ExcelRead jobCostingDoc;
+        ExcelRead jobCostingDoc = new ExcelRead();
 
         public JobCostingGUI()
         {
@@ -26,33 +28,37 @@ namespace JobCosting
 
         private void openbtn_Click(object sender, EventArgs e)
         {
-            jobCostingDoc = new ExcelRead();
             jobCostingDoc.openDoc();
         }
 
         private void analyzebtn_Click(object sender, EventArgs e)
         {
-            if (jobCostingDoc.myApp == null)
-            {
-                jobCostingDoc = new ExcelRead();        
-            }
-
+            
             jobCostingDoc.reInitialize();
             jobCostingDoc.setRange();
-            Dictionary<string, SuperJob> jobList = JobCostingDriver.CostingDriver(jobCostingDoc);
-            ExcelWrite.writeJobData(jobList, jobCostingDoc.myRange); 
+
+            if (jobCostingDoc.myRange != null)
+            {
+                Dictionary<string, SuperJob> jobList = JobCostingDriver.CostingDriver(jobCostingDoc);
+
+                ExcelWrite.writeJobData(jobList, jobCostingDoc.myRange, jobCostingDoc.mySheet);
+            }
         }
 
         private void closebtn_Click(object sender, EventArgs e)
         {
-            if (jobCostingDoc.myApp == null)
+            try
             {
-                jobCostingDoc = new ExcelRead();
-
+                // Open, but didnt initialize
+                jobCostingDoc.reInitialize();
+                jobCostingDoc.close();
             }
-            jobCostingDoc.reInitialize();
-
-            jobCostingDoc.close();
+            catch (Exception ex)
+            {
+                // No Document
+                // Do nothing
+                Console.WriteLine(ex.Message);
+            }            
         }
 
         private void exitbtn_Click(object sender, EventArgs e)

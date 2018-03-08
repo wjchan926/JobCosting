@@ -4,31 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Runtime.InteropServices;
 
 namespace JobCosting
 {
     static class ExcelWrite
     {       
-        public static Excel.Application myApp { get; private set; } = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
-        public static Excel.Workbook myBook { get; private set; } = myApp.ActiveWorkbook;
-        public static Excel.Worksheet mySheet { get; private set; } = myBook.ActiveSheet;
-
         // Write Methods
         // May need to change
         /// <summary>
         /// Writes job data to the excel sheet
         /// </summary>
         /// <param name="job"></param> Job to be analyzed
-        public static void writeJobData(Dictionary<string, SuperJob> jobList, Excel.Range selectedRange)
+        public static void writeJobData(Dictionary<string, SuperJob> jobList, Excel.Range selectedRange, Excel.Worksheet mySheet)
         {
-            myApp  = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
-            myBook  = myApp.ActiveWorkbook;
-            mySheet = myBook.ActiveSheet;
-
             foreach (Excel.Range range in selectedRange.Rows)
             {
-                string soStr = (mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0, 4);
+                dynamic soValue = mySheet.Cells[range.Row, ExcelColumn.salesOrder].Value;
+                string soStr = soValue.ToString().Substring(0, 4);
 
                 mySheet.Cells[range.Row, ExcelColumn.salesRep] = jobList[soStr].salesRep;
                 mySheet.Cells[range.Row, ExcelColumn.actualCost] = jobList[soStr].amountActualCost;

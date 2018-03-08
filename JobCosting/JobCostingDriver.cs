@@ -65,13 +65,17 @@ namespace JobCosting
               * Add to jobList
               * 
               * */
-            foreach (Excel.Range range in jobCostingDoc.myRange.Rows)
-            {
-                if(jobCostingDoc.mySheet.Name != "StockingOrders")
+            Excel.Range myRange = jobCostingDoc.myRange;
+            Excel.Worksheet exSheet = jobCostingDoc.mySheet;
+
+            foreach (Excel.Range range in myRange.Rows)
+            {                
+
+                if(exSheet.Name != "StockingOrders")
                 {                   
-                    string soStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0,4);
-                    string partNumberStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
-                    long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;
+                    string soStr = (exSheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0,4);
+                    string partNumberStr = (exSheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
+                    long orderQtyLong = (long)(exSheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;
                     
                     Job job = new Job(soStr, partNumberStr, orderQtyLong);
 
@@ -79,14 +83,14 @@ namespace JobCosting
                 }
                 else
                 {
-                    string soStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0, 4);
-                    string partNumberStr = (jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
-                    long orderQtyLong = (long)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;        
+                    string soStr = (exSheet.Cells[range.Row, ExcelColumn.salesOrder]).Value.ToString().Substring(0, 4);
+                    string partNumberStr = (exSheet.Cells[range.Row, ExcelColumn.partNumber]).Value.ToString();
+                    long orderQtyLong = (long)(exSheet.Cells[range.Row, ExcelColumn.orderQuantity]).Value;        
 
                     StockJob job = new StockJob(soStr, partNumberStr, orderQtyLong);
-                    job.expectedRevenue = (double)(jobCostingDoc.mySheet.Cells[range.Row, ExcelColumn.expectedAmount]).Value;
+                    job.expectedRevenue = (double)(exSheet.Cells[range.Row, ExcelColumn.expectedAmount]).Value;
                     jobList.Add(job.salesOrder, job);
-                }
+                }                   
             }
  
             // Map values from tables to job objects
@@ -134,8 +138,7 @@ namespace JobCosting
             {
                 thread.Join();
             }
-
-
+            
 
             // Disconnect
             QBConnector.disconnect();

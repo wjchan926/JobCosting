@@ -5,34 +5,43 @@ using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace JobCosting
 {
     sealed class ExcelRead
     {
-        public Excel.Workbook myBook { get; set; } = null;
         public Excel.Application myApp { get; set; } = null;
+        public Excel.Workbook myBook { get; set; } = null;
+        public Excel.Workbooks myBooks { get; set; } = null;
         public Excel.Worksheet mySheet { get; set; } = null;
         public Excel.Range myRange { get; private set; } = null;
 
         private string jobCostingPath = @"S:\JOB COSTING REFERENCE WORK SHEET.xlsm";
-
+        
         public void openDoc()
         {
             // Creates new instance of excel
-            myApp = new Excel.Application();
+            try
+            {
+                myApp = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
+            }
+            catch (Exception)
+            {
+                myApp = new Excel.Application();          
+            }
   
             // True to see new instance, false to hide
             myApp.Visible = true;
-
-            // Hide alerts
             myApp.DisplayAlerts = false;
 
             // Sets workbook to path specified
-            // Try to open workbook.
+            // Try to open workbook.           
             try
             {
-                myBook = myApp.Workbooks.Open(jobCostingPath);
+                myBooks = myApp.Workbooks;
+                myBook = myBooks.Open(jobCostingPath);         
+                mySheet = myBook.ActiveSheet;
             }
             catch (NullReferenceException e)
             {
@@ -45,18 +54,25 @@ namespace JobCosting
                 // Other problems
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 throw;
-            }
-
-            // Sets worksheet to specified sheet.  Starts at 1 or specify sheet name as string
-            mySheet = myBook.ActiveSheet;
+            }                 
         }
 
+        /// <summary>
+        /// Relinks the open excel document to this program
+        /// </summary>
         public void reInitialize()
-        {            
-            myApp = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
-            myApp.DisplayAlerts = false;
-            myBook = myApp.ActiveWorkbook;
-            mySheet = myBook.ActiveSheet;           
+        {
+            try
+            {
+                myApp = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
+                myBooks = myApp.Workbooks;
+                myBook = myApp.ActiveWorkbook;
+                mySheet = myBook.ActiveSheet;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }         
         }
 
         /// <summary>
@@ -64,26 +80,35 @@ namespace JobCosting
         /// Called with the Save and Close GUI Method
         /// </summary>
         public void close()
-        {             
+        {
             try
-            {                
-                myBook.Close(true, null, null);
+            {
+                myBook.Close(true, Type.Missing, Type.Missing);
+                myBooks.Close();
+                myApp.Quit();
+                myApp.DisplayAlerts = true;
+                release();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }                 
+        }
+
+        public void release()
+        {
+            try
+            {
+                Marshal.ReleaseComObject(mySheet);
+                Marshal.ReleaseComObject(myBooks);
+                Marshal.ReleaseComObject(myBook);
+                if (myRange != null) { Marshal.ReleaseComObject(myRange); }
+                Marshal.ReleaseComObject(myApp);              
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            myApp.DisplayAlerts = true;
-            myApp.Quit();
-
-            release();
-        }
-
-        public void release()
-        {
-            Marshal.ReleaseComObject(mySheet);
-            Marshal.ReleaseComObject(myBook);
-            Marshal.ReleaseComObject(myApp);
         }
 
         public void setRange()
@@ -92,6 +117,7 @@ namespace JobCosting
             try
             {
                 myRange = myApp.Selection;
+                Console.WriteLine("Range has been set");
             }
             catch (Exception e)
             {

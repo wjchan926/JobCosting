@@ -67,7 +67,7 @@ namespace JobCosting
 
         public virtual void setAmountActualCost()
         {
-          amountActualCost = amountActualCost - badCostData + productCost * orderQuantity;
+            amountActualCost = amountActualCost - badCostData + productCost * orderQuantity;
         }
 
         public void setDifference()
@@ -83,25 +83,25 @@ namespace JobCosting
         public void setUnitHigh()
         {
             double profitMargin = .42;
-            unitHigh = (double)productCost * (double)orderQuantity / (1 - profitMargin) / (double)orderQuantity;
+            unitHigh = (double)amountActualCost / (1 - profitMargin) / (double)orderQuantity;
         }
 
         public void setUnitMed()
         {
             double profitMargin = .35;
-            unitMed = (double)productCost * (double)orderQuantity / (1 - profitMargin) / (double)orderQuantity;
+            unitMed = (double)amountActualCost / (1 - profitMargin) / (double)orderQuantity;
         }
 
         public void setUnitLow()
         {
             double profitMargin = .3;
-            unitLow = (double)productCost * (double)orderQuantity / (1 - profitMargin) / (double)orderQuantity;
+            unitLow = (double)amountActualCost / (1 - profitMargin) / (double)orderQuantity;
         }
 
         public void setUnitFloor()
         {
             double profitMargin = .25;
-            unitFloor = (double)productCost * (double)orderQuantity / (1 - profitMargin) / (double)orderQuantity;
+            unitFloor = (double)amountActualCost / (1 - profitMargin) / (double)orderQuantity;
         }
 
         public void setMarlinFreight()
