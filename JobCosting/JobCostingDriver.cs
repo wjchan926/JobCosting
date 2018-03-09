@@ -11,22 +11,37 @@ using System.Runtime.InteropServices;
 
 namespace JobCosting
 {
+    /// <summary>
+    /// Main Driver for the Application
+    /// </summary>
     static class JobCostingDriver
-    {
+    {        
+        /// <summary>
+        /// Main method.
+        /// Runs the GUI for the Application
+        /// </summary>
         public static void Main()
         {
             Application.Run(new JobCostingGUI());
         }
 
+        /// <summary>
+        /// Method that drives the analysis procedures
+        /// Utilizes Multithreading and connections to QuickBooks.
+        /// QuickBooks must be open for this to work.
+        /// </summary>
+        /// <param name="jobCostingDoc"></param> Job Costing Document Excel Sheet
+        /// <returns></returns> A Dictionary of jobs that has data mapped to each entry
         public static Dictionary<string,SuperJob> CostingDriver(ExcelRead jobCostingDoc)
-        {
+        {             
+
             if (jobCostingDoc == null)
             {
                 jobCostingDoc.reInitialize();
             }
 
             Console.WriteLine("Main() Starting");
-                                    
+                                                
             // Create Conneciton Object
             QuickBooksConnector QBConnector = new QuickBooksConnector();
 
@@ -127,6 +142,10 @@ namespace JobCosting
                     }
                 }
                 Console.WriteLine("Properties mapped from SO and Item Tables");
+
+                // Write to Textbox
+                ConsoleWriter.WriteLine("Properties mapped from QuickBooks Tables");
+
             }
             catch (Exception e)
             {
@@ -149,11 +168,10 @@ namespace JobCosting
                 entry.Value.calculateFields();
             }
 
+
             Console.WriteLine("End of Main");
 
-            return jobList;
-          
-            
+            return jobList;           
         }
 
     }

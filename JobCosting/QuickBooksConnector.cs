@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace JobCosting
 {
+    /// <summary>
+    /// Connects QuickBooks to this application
+    /// </summary>
     class QuickBooksConnector
     {
         public static OdbcConnection con { get; private set; }
@@ -15,6 +18,9 @@ namespace JobCosting
         public static DataTable result_Cost { get; private set; }
         public static DataTable result_SalesOrder { get; private set; }  
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public QuickBooksConnector()
         {
             result_Cost = new DataTable();
@@ -33,6 +39,7 @@ namespace JobCosting
 
                 con.Open(); // Open Connection, Required QB to be open
                 Console.WriteLine("Connected to QB Thru QODBC");
+                ConsoleWriter.WriteLine("Connected to QB Thru QODBC");
             }
             catch (Exception dbConnectionEx)
             {
@@ -60,6 +67,8 @@ namespace JobCosting
 
                 conDSNLess.Open(); // Open Connection, Required QB to be open
                 Console.WriteLine("Connected to QB Thru DSNLess Connection");
+                ConsoleWriter.WriteLine("Connected to QB Thru DSNLess Connection");
+
             }
             catch (Exception dbConnectionEx)
             {
@@ -71,11 +80,6 @@ namespace JobCosting
                 Console.WriteLine(dbConnectionEx.Message);
                 throw;
             }
-
-            //      DataTableReader reader = new DataTableReader(result_Item);
-
-            //        tableWriter(reader);
-
         }
 
         /// <summary>
@@ -86,6 +90,7 @@ namespace JobCosting
             con.Close(); // Close Connection
             conDSNLess.Close(); // Close Connection
             Console.WriteLine("Disconnected from QB");
+            ConsoleWriter.WriteLine("Disconnected from QB");
         }
 
         /// <summary>
@@ -134,6 +139,7 @@ namespace JobCosting
                 result_Cost.PrimaryKey = key;
 
                 Console.WriteLine("Cost Table Filled");
+                ConsoleWriter.WriteLine("Cost Table Filled");
             }
 
             /// <summary>
@@ -154,7 +160,7 @@ namespace JobCosting
                 dAdapter.Fill(result_SalesOrder);
                      
                 Console.WriteLine("SO Table Filled");
-         
+                ConsoleWriter.WriteLine("SO Table Filled");
             }
 
             public static void tableWriter(DataTable dataTable)
@@ -190,6 +196,8 @@ namespace JobCosting
             private static void threadStoredProcedure(SuperJob job)
             {
                 Console.WriteLine("Stored Procedure Started");
+                ConsoleWriter.WriteLine("Stored Procedure(s) Started");
+
                 // Create SQL statement for grabbing table data
                 DataTable result_StoredProcedure = new DataTable();
 
@@ -230,6 +238,11 @@ namespace JobCosting
                 }                
             }
 
+            /// <summary>
+            /// Maps data to job entries
+            /// </summary>
+            /// <param name="job"></param> Job analyzed
+            /// <param name="result_StoredProcedure"></param> Table that has all stored procedure data
             private static void mapData(SuperJob job, DataTable result_StoredProcedure)
             {
                 try // Try to map bad cost data
@@ -239,7 +252,8 @@ namespace JobCosting
                 catch (Exception e)
                 {
                     Console.Write(e.Message);
-                    Console.WriteLine(" No material data found for: " + job.customerName);
+                    Console.WriteLine("No material data found for: " + job.customerName);
+                    ConsoleWriter.WriteLine("No material data found for: " + job.customerName);
                 }
 
                 // Map total Costs
@@ -255,7 +269,8 @@ namespace JobCosting
                 catch (Exception e)
                 {
                     Console.Write(e.Message);
-                    Console.WriteLine(" No frieght data found for: " + job.customerName);
+                    Console.WriteLine("No frieght data found for: " + job.customerName);
+                    ConsoleWriter.WriteLine("No frieght data found for: " + job.customerName);
                 }
 
                 try // Try to map msc Tooling if found
@@ -265,7 +280,8 @@ namespace JobCosting
                 catch (Exception e)
                 {
                     Console.Write(e.Message);
-                    Console.WriteLine(" No tooling data found for: " + job.customerName);
+                    Console.WriteLine("No tooling data found for: " + job.customerName);
+                    ConsoleWriter.WriteLine("No tooling data found for: " + job.customerName);
                 }
             }
         }

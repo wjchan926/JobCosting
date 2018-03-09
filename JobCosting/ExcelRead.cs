@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace JobCosting
 {
+    /// <summary>
+    /// Class that reads the Job Costing document
+    /// </summary>
     sealed class ExcelRead
     {
         public Excel.Application myApp { get; set; } = null;
@@ -19,6 +22,9 @@ namespace JobCosting
 
         private string jobCostingPath = @"S:\JOB COSTING REFERENCE WORK SHEET.xlsm";
         
+        /// <summary>
+        /// Opens the Job Costing Document
+        /// </summary>
         public void openDoc()
         {
             // Creates new instance of excel
@@ -95,6 +101,9 @@ namespace JobCosting
             }                 
         }
 
+        /// <summary>
+        /// Release objects
+        /// </summary>
         public void release()
         {
             try
@@ -111,6 +120,9 @@ namespace JobCosting
             }
         }
 
+        /// <summary>
+        /// Sets the range of of jobs to analyze with current selection
+        /// </summary>
         public void setRange()
         {
             // Try to get selected range of cells from excel     
@@ -123,6 +135,7 @@ namespace JobCosting
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine("Selection is not a valid range of cells");
+                ConsoleWriter.WriteLine("Selection is not a valid range of cells");
             }
         }               
          

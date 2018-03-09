@@ -8,6 +8,9 @@ using System.Collections;
 
 namespace JobCosting
 {
+    /// <summary>
+    /// Regular Job Class
+    /// </summary>
     public sealed class Job : SuperJob
     {
         /// <summary>

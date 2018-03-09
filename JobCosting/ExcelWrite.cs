@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Drawing;
 
 namespace JobCosting
 {
+    /// <summary>
+    /// Wrties the data and colors in Excel Job Costing Document
+    /// </summary>
     static class ExcelWrite
     {       
         // Write Methods
@@ -34,7 +38,88 @@ namespace JobCosting
                 mySheet.Cells[range.Row, ExcelColumn.freight] = jobList[soStr].freight;
                 mySheet.Cells[range.Row, ExcelColumn.marlinFreight] = jobList[soStr].marlinFreight;
                 mySheet.Cells[range.Row, ExcelColumn.miscTooling] = jobList[soStr].miscToolingCost;
+
+                formatJobDoc(jobList[soStr], range, mySheet);
+                ConsoleWriter.WriteLine(jobList[soStr] + " Data Written to Excel.");
             }
+        }
+
+        /// <summary>
+        /// Colors the cells based on job costing values
+        /// </summary>
+        /// <param name="job"></param> Job analyzed
+        /// <param name="range"></param> row that the job is in
+        /// <param name="mySheet"></param> current worksheet
+        private static void formatJobDoc(SuperJob job, Excel.Range range, Excel.Worksheet mySheet)
+        {
+            if (job.salesRep == "Not Fully Invoiced" || job.salesRep == "No Revenue for Job" || job.salesRep == "TimeClock Not Imported")
+            {
+                mySheet.Cells[range.Row, ExcelColumn.salesRep].Interior.Color = Color.FromArgb(96, 96, 96);
+            }
+            else
+            {
+                mySheet.Cells[range.Row, ExcelColumn.salesRep].Interior.ColorIndex = Excel.Constants.xlNone;
+            }
+
+            mySheet.Cells[range.Row, ExcelColumn.actualCost].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.actualRevenue].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.difference].Interior.ColorIndex = Excel.Constants.xlNone;
+
+            if (job.salesRep == "Not Fully Invoiced" || job.salesRep == "No Revenue for Job" || job.salesRep == "TimeClock Not Imported")
+            {
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(96, 96, 96);
+            }
+            else if(job.grossMargin <= -.25)
+            {
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(255, 182, 193);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(178, 34, 34);
+            }
+            else if (job.grossMargin <= 0)
+            {
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(255, 204, 229);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(225, 0, 127);
+            }
+            else if (job.grossMargin <.25)
+            {
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(255, 128, 0);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(0, 0, 0);
+            }
+            else if (job.grossMargin < .42)
+            {
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(255, 255, 0);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(0, 0, 0);
+            }
+            else if (job.grossMargin >= .42)
+            {
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(182, 255, 193);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(34, 178, 34);
+            }
+
+            if (job.salesRep == "Not Fully Invoiced" || job.salesRep == "No Revenue for Job" || job.salesRep == "TimeClock Not Imported")
+            {
+                mySheet.Cells[range.Row, ExcelColumn.unitHigh].Interior.Color = Color.FromArgb(96, 96, 96);
+                mySheet.Cells[range.Row, ExcelColumn.unitMed].Interior.Color = Color.FromArgb(96, 96, 96);
+                mySheet.Cells[range.Row, ExcelColumn.unitLow].Interior.Color = Color.FromArgb(96, 96, 96);
+                mySheet.Cells[range.Row, ExcelColumn.unitFloor].Interior.Color = Color.FromArgb(96, 96, 96);
+
+                mySheet.Cells[range.Row, ExcelColumn.unitHigh].Font.Color = Color.FromArgb(96, 96, 96);
+                mySheet.Cells[range.Row, ExcelColumn.unitMed].Font.Color = Color.FromArgb(96, 96, 96);
+                mySheet.Cells[range.Row, ExcelColumn.unitLow].Font.Color = Color.FromArgb(96, 96, 96);
+                mySheet.Cells[range.Row, ExcelColumn.unitFloor].Font.Color = Color.FromArgb(96, 96, 96);
+            }
+            else
+            {
+                mySheet.Cells[range.Row, ExcelColumn.unitHigh].Interior.ColorIndex = Excel.Constants.xlNone;
+                mySheet.Cells[range.Row, ExcelColumn.unitMed].Interior.ColorIndex = Excel.Constants.xlNone;
+                mySheet.Cells[range.Row, ExcelColumn.unitLow].Interior.ColorIndex = Excel.Constants.xlNone;
+                mySheet.Cells[range.Row, ExcelColumn.unitFloor].Interior.ColorIndex = Excel.Constants.xlNone;
+
+                mySheet.Cells[range.Row, ExcelColumn.unitHigh].Font.Color = Color.FromArgb(0, 0, 0);
+                mySheet.Cells[range.Row, ExcelColumn.unitMed].Font.Color = Color.FromArgb(0, 0, 0);
+                mySheet.Cells[range.Row, ExcelColumn.unitLow].Font.Color = Color.FromArgb(0, 0, 0);
+                mySheet.Cells[range.Row, ExcelColumn.unitFloor].Font.Color = Color.FromArgb(0, 0, 0);
+            }
+
         }
     }
 }

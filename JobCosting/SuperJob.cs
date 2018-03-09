@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace JobCosting
 {
+    /// <summary>
+    /// Abtract parent job class used as template for other types of ojbs
+    /// </summary>
     public abstract class SuperJob
     {
         // Excel
@@ -34,14 +37,28 @@ namespace JobCosting
         public double calcRevenue { get; protected set; } = 0;
         public double difference { get; protected set; } = 0;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public SuperJob() { }
 
+        /// <summary>
+        /// Contstructor with Sales Order and Part Number arguments
+        /// </summary>
+        /// <param name="salesOrder"></param> Sales Order to be Analyzed
+        /// <param name="partNumber"></param> Part Number
         public SuperJob(string salesOrder, string partNumber)
         {
             this.salesOrder = salesOrder;
             this.partNumber = partNumber;
         }
 
+        /// <summary>
+        /// Constructor with 3 arguments
+        /// </summary>
+        /// <param name="salesOrder"></param> Sales Order to be Analyzed
+        /// <param name="partNumber"></param> Part Number
+        /// <param name="orderQuantity"></param> Order Quantity
         public SuperJob(string salesOrder, string partNumber, long orderQuantity)
         {
             this.salesOrder = salesOrder;
@@ -63,10 +80,15 @@ namespace JobCosting
             setUnitLow();
             setUnitFloor();
             setMarlinFreight();
+            setSaleRep();
         }
-
+        
         public virtual void setAmountActualCost()
         {
+            if (amountActualCost == 0 && badCostData ==0)
+            {
+                salesRep = "TimeClock Not Imported";
+            }
             amountActualCost = amountActualCost - badCostData + productCost * orderQuantity;
         }
 
@@ -77,7 +99,14 @@ namespace JobCosting
 
         public void setGrossMargin()
         {
-            grossMargin = difference / (double)amountActualRevenue;
+            if (amountActualRevenue == 0)
+            {
+                grossMargin = 0;
+            }
+            else
+            {
+                grossMargin = difference / (double)amountActualRevenue;
+            }
         }
 
         public void setUnitHigh()
@@ -107,6 +136,14 @@ namespace JobCosting
         public void setMarlinFreight()
         {
             marlinFreight = (double)freight / 1.75;
+        }
+
+        public void setSaleRep()
+        {
+            if(amountActualRevenue == 0)
+            {
+                salesRep = "No Revenue for Job";
+            }
         }
     }
 }
