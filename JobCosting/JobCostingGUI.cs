@@ -136,6 +136,9 @@ namespace JobCosting
             outputTb.Refresh();
         }
 
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            outputTb.Clear();
+        }
     }
 }

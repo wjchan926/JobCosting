@@ -35,6 +35,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.outputTb = new System.Windows.Forms.TextBox();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,10 +82,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.outputTb);
             this.groupBox1.Location = new System.Drawing.Point(193, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(365, 167);
+            this.groupBox1.Size = new System.Drawing.Size(365, 168);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Console";
@@ -96,7 +98,7 @@
             this.outputTb.Name = "outputTb";
             this.outputTb.ReadOnly = true;
             this.outputTb.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.outputTb.Size = new System.Drawing.Size(353, 142);
+            this.outputTb.Size = new System.Drawing.Size(353, 114);
             this.outputTb.TabIndex = 0;
             this.outputTb.TextChanged += new System.EventHandler(this.outputTb_TextChanged);
             // 
@@ -104,12 +106,22 @@
             // 
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(273, 139);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(86, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Clear Console";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // JobCostingGUI
             // 
             this.AcceptButton = this.analyzebtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(570, 190);
+            this.ClientSize = new System.Drawing.Size(570, 187);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.exitbtn);
@@ -135,6 +147,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox outputTb;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.Button button1;
     }
 }
 
