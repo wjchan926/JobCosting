@@ -62,7 +62,7 @@ namespace JobCosting
                 conDSNLess = new OdbcConnection("ODBC; Driver={QB SQL Anywhere}; " +
                     "UID=JobCosting; " +
                     "PWD=M@rl1n; " +
-                    "DatabaseName = 88c8bc08ff9c457aaca2375ba0478479; " +
+           //         "DatabaseName = 88c8bc08ff9c457aaca2375ba0478479; " +
                     "ServerName=QB_MSW-FP1_27; " +
                     "AutoStop=NO; Integrated = NO; " +
                     "FILEDSN=" + fileDSN + ";" +
