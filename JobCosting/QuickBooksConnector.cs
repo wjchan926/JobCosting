@@ -53,13 +53,16 @@ namespace JobCosting
             }
 
             // Try to Create DNSLess ODBC Connection
+            // The database name changed randomly one day.
+            // Not sure if it is a sever thing, that randomly changes.
+            // A solution could be to tunnel into the file containing the database name and extract it
             try
             {
                 string fileDSN = @"Q:\Imported Company File 7-25-17\Marlin Steel Wire Products, LLC.QBW.DSN";
                 conDSNLess = new OdbcConnection("ODBC; Driver={QB SQL Anywhere}; " +
                     "UID=JobCosting; " +
                     "PWD=M@rl1n; " +
-                    "DatabaseName = 504f8624078240a19834ca08f0c7468e; " +
+                    "DatabaseName = 88c8bc08ff9c457aaca2375ba0478479; " +
                     "ServerName=QB_MSW-FP1_27; " +
                     "AutoStop=NO; Integrated = NO; " +
                     "FILEDSN=" + fileDSN + ";" +

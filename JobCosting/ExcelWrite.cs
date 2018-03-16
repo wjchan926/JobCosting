@@ -40,7 +40,7 @@ namespace JobCosting
                 mySheet.Cells[range.Row, ExcelColumn.miscTooling] = jobList[soStr].miscToolingCost;
 
                 formatJobDoc(jobList[soStr], range, mySheet);
-                ConsoleWriter.WriteLine(jobList[soStr] + " Data Written to Excel.");
+                ConsoleWriter.WriteLine(jobList[soStr].partNumber + " | " + jobList[soStr].customerName + " Data Written to Excel.");
             }
         }
 

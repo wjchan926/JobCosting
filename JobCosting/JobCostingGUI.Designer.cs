@@ -33,9 +33,9 @@
             this.closebtn = new System.Windows.Forms.Button();
             this.exitbtn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.outputTb = new System.Windows.Forms.TextBox();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,6 +91,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Console";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(273, 139);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(86, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Clear Console";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // outputTb
             // 
             this.outputTb.Location = new System.Drawing.Point(6, 19);
@@ -105,16 +115,6 @@
             // backgroundWorker
             // 
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(273, 139);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Clear Console";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // JobCostingGUI
             // 
@@ -131,6 +131,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "JobCostingGUI";
             this.Text = "Job Costing Tool";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
