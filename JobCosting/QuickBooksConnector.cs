@@ -47,7 +47,7 @@ namespace JobCosting
                 {
                     con.Dispose();
                 }
-
+                ConsoleWriter.WriteLine("Unable to Create Connection.");
                 Console.WriteLine(dbConnectionEx.Message);
                 throw;
             }
@@ -58,7 +58,7 @@ namespace JobCosting
             // A solution could be to tunnel into the file containing the database name and extract it
             try
             {
-                string fileDSN = @"Q:\Imported Company File 7-25-17\Marlin Steel Wire Products, LLC.QBW.DSN";
+                string fileDSN = @"\\MSW-FP1\Quickbooks\Imported Company File 7-25-17\Marlin Steel Wire Products, LLC.QBW.DSN";
                 conDSNLess = new OdbcConnection("ODBC; Driver={QB SQL Anywhere}; " +
                     "UID=JobCosting; " +
                     "PWD=M@rl1n; " +
@@ -272,8 +272,8 @@ namespace JobCosting
                 catch (Exception e)
                 {
                     Console.Write(e.Message);
-                    Console.WriteLine("No frieght data found for: " + job.customerName);
-                    ConsoleWriter.WriteLine("No frieght data found for: " + job.customerName);
+                    Console.WriteLine("No freight data found for: " + job.customerName);
+                    ConsoleWriter.WriteLine("No freight data found for: " + job.customerName);
                 }
 
                 try // Try to map msc Tooling if found

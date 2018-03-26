@@ -92,7 +92,7 @@ namespace JobCosting
             else if (job.grossMargin >= .42)
             {
                 mySheet.Cells[range.Row, ExcelColumn.grossMargin].Interior.Color = Color.FromArgb(182, 255, 193);
-                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(34, 178, 34);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin].Font.Color = Color.FromArgb(20, 100, 20);
             }
 
             if (job.salesRep == "Not Fully Invoiced" || job.salesRep == "No Revenue for Job" || job.salesRep == "TimeClock Not Imported")
