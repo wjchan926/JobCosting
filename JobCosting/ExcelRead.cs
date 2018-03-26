@@ -20,7 +20,7 @@ namespace JobCosting
         public Excel.Worksheet mySheet { get; set; } = null;
         public Excel.Range myRange { get; private set; } = null;
 
-        private string jobCostingPath = @"S:\JOB COSTING REFERENCE WORK SHEET.xlsm";
+        private string jobCostingPath = @"\\MSW-FP1\Shared\JOB COSTING REFERENCE WORK SHEET.xlsm";
         
         /// <summary>
         /// Opens the Job Costing Document

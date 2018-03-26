@@ -10,16 +10,36 @@ using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Deployment.Application;
 
 namespace JobCosting
 {
     public partial class JobCostingGUI : Form
     {
         ExcelRead jobCostingDoc = new ExcelRead();
-            
+        string version;
+
         public JobCostingGUI()
         {
             InitializeComponent();
+            try
+            {
+                version = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();                
+            }
+            catch (Exception)
+            {
+                
+            }
+            if (version == null)
+            {
+                this.Text = "Job Costing Tool VDebug";
+            }
+            else
+            {
+                this.Text = "Job Costing Tool V" + version;
+            }       
+
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -28,7 +48,8 @@ namespace JobCosting
 
             // Set output to textbox
             ConsoleWriter.setGUI(this);
-            ConsoleWriter.setTextBox(outputTb);            
+            ConsoleWriter.setTextBox(outputTb);
+            ConsoleWriter.WriteLine("Please Ensure QuickBooks Application is Open.");
             ConsoleWriter.WriteLine("Job Costing Analyzer Tool Starting.");
         }
 
@@ -109,6 +130,7 @@ namespace JobCosting
                 // Open, but didnt initialize
                 jobCostingDoc.reInitialize();
                 jobCostingDoc.close();
+                ConsoleWriter.WriteLine("Job Costing Document Closed.");
             }
             catch (Exception ex)
             {
