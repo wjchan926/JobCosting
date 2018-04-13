@@ -150,7 +150,10 @@ namespace JobCosting
 
         public void setCostToCure()
         {
-            if (grossMargin < .42)
+            if (amountActualRevenue == 0) {
+                costToCure = 0;
+            }
+            else if (grossMargin < .42)
             {
                 costToCure = -difference + unitHigh * orderQuantity;
             }
