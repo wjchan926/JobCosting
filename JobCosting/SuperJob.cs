@@ -36,6 +36,7 @@ namespace JobCosting
         public double calcCost { get; protected set; } = 0;
         public double calcRevenue { get; protected set; } = 0;
         public double difference { get; protected set; } = 0;
+        public double costToCure { get; protected set; } = 0;
 
         /// <summary>
         /// Default constructor
@@ -81,6 +82,7 @@ namespace JobCosting
             setUnitFloor();
             setMarlinFreight();
             setSaleRep();
+            setCostToCure();
         }
         
         public virtual void setAmountActualCost()
@@ -143,6 +145,14 @@ namespace JobCosting
             if(amountActualRevenue == 0)
             {
                 salesRep = "No Revenue for Job";
+            }
+        }
+
+        public void setCostToCure()
+        {
+            if (grossMargin < .42)
+            {
+                costToCure = difference + unitHigh * orderQuantity;
             }
         }
     }

@@ -38,6 +38,7 @@ namespace JobCosting
                 mySheet.Cells[range.Row, ExcelColumn.freight] = jobList[soStr].freight;
                 mySheet.Cells[range.Row, ExcelColumn.marlinFreight] = jobList[soStr].marlinFreight;
                 mySheet.Cells[range.Row, ExcelColumn.miscTooling] = jobList[soStr].miscToolingCost;
+                mySheet.Cells[range.Row, ExcelColumn.costToCure] = jobList[soStr].costToCure;
 
                 formatJobDoc(jobList[soStr], range, mySheet);
                 ConsoleWriter.WriteLine(jobList[soStr].partNumber + " | " + jobList[soStr].customerName + " Data Written to Excel.");
@@ -64,6 +65,10 @@ namespace JobCosting
             mySheet.Cells[range.Row, ExcelColumn.actualCost].Interior.ColorIndex = Excel.Constants.xlNone;
             mySheet.Cells[range.Row, ExcelColumn.actualRevenue].Interior.ColorIndex = Excel.Constants.xlNone;
             mySheet.Cells[range.Row, ExcelColumn.difference].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.freight].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.marlinFreight].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.miscTooling].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.costToCure].Interior.ColorIndex = Excel.Constants.xlNone;
 
             if (job.salesRep == "Not Fully Invoiced" || job.salesRep == "No Revenue for Job" || job.salesRep == "TimeClock Not Imported")
             {
