@@ -152,7 +152,7 @@ namespace JobCosting
         {
             if (grossMargin < .42)
             {
-                costToCure = difference + unitHigh * orderQuantity;
+                costToCure = unitHigh * orderQuantity - (double)amountActualRevenue;
             }
         }
     }
