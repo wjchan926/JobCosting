@@ -37,6 +37,7 @@ namespace JobCosting
         public double calcRevenue { get; protected set; } = 0;
         public double difference { get; protected set; } = 0;
         public double costToCure { get; protected set; } = 0;
+        public double healingFactor { get; protected set; } = 0;
 
         /// <summary>
         /// Default constructor
@@ -83,6 +84,7 @@ namespace JobCosting
             setMarlinFreight();
             setSaleRep();
             setCostToCure();
+            setHealingFactor();
         }
         
         public virtual void setAmountActualCost()
@@ -156,6 +158,18 @@ namespace JobCosting
             else if (grossMargin < .42)
             {
                 costToCure = -difference + unitHigh * orderQuantity;
+            }
+        }
+
+        public void setHealingFactor()
+        {
+            if (amountActualRevenue == 0)
+            {
+                healingFactor = 0;
+            }
+            else if (grossMargin >= .42)
+            {
+                healingFactor = -difference + unitHigh * orderQuantity;
             }
         }
     }

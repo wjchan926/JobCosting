@@ -28,5 +28,6 @@ namespace JobCosting
         public static string marlinFreight { get; private set; } = "AE";
         public static string miscTooling { get; private set; } = "AF";
         public static string costToCure { get; private set; } = "AH";
+        public static string healingFactor { get; private set; } = "AI";
     }
 }

@@ -39,6 +39,7 @@ namespace JobCosting
                 mySheet.Cells[range.Row, ExcelColumn.marlinFreight] = jobList[soStr].marlinFreight;
                 mySheet.Cells[range.Row, ExcelColumn.miscTooling] = jobList[soStr].miscToolingCost;
                 mySheet.Cells[range.Row, ExcelColumn.costToCure] = jobList[soStr].costToCure;
+                mySheet.Cells[range.Row, ExcelColumn.healingFactor] = jobList[soStr].healingFactor;
 
                 formatJobDoc(jobList[soStr], range, mySheet);
                 ConsoleWriter.WriteLine(jobList[soStr].partNumber + " | " + jobList[soStr].customerName + " Data Written to Excel.");
@@ -69,6 +70,7 @@ namespace JobCosting
             mySheet.Cells[range.Row, ExcelColumn.marlinFreight].Interior.ColorIndex = Excel.Constants.xlNone;
             mySheet.Cells[range.Row, ExcelColumn.miscTooling].Interior.ColorIndex = Excel.Constants.xlNone;
             mySheet.Cells[range.Row, ExcelColumn.costToCure].Interior.ColorIndex = Excel.Constants.xlNone;
+            mySheet.Cells[range.Row, ExcelColumn.healingFactor].Interior.ColorIndex = Excel.Constants.xlNone;
 
             if (job.salesRep == "Not Fully Invoiced" || job.salesRep == "No Revenue for Job" || job.salesRep == "TimeClock Not Imported")
             {
