@@ -44,6 +44,7 @@ namespace JobCosting
                                                 
             // Create Conneciton Object
             QuickBooksConnector QBConnector = new QuickBooksConnector();
+            QuickBooksConnector QBConnector2 = new QuickBooksConnector();
 
             // Connect
             QBConnector.connect();
