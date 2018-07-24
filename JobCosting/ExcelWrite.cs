@@ -27,19 +27,19 @@ namespace JobCosting
                 string soStr = soValue.ToString().Substring(0, 4);
 
                 mySheet.Cells[range.Row, ExcelColumn.salesRep] = jobList[soStr].salesRep;
-                mySheet.Cells[range.Row, ExcelColumn.actualCost] = jobList[soStr].amountActualCost;
-                mySheet.Cells[range.Row, ExcelColumn.actualRevenue] = jobList[soStr].amountActualRevenue;
-                mySheet.Cells[range.Row, ExcelColumn.difference] = jobList[soStr].difference;
-                mySheet.Cells[range.Row, ExcelColumn.grossMargin] = jobList[soStr].grossMargin;
-                mySheet.Cells[range.Row, ExcelColumn.unitHigh] = jobList[soStr].unitHigh;
-                mySheet.Cells[range.Row, ExcelColumn.unitMed] = jobList[soStr].unitMed;
-                mySheet.Cells[range.Row, ExcelColumn.unitLow] = jobList[soStr].unitLow;
-                mySheet.Cells[range.Row, ExcelColumn.unitFloor] = jobList[soStr].unitFloor;
-                mySheet.Cells[range.Row, ExcelColumn.freight] = jobList[soStr].freight;
-                mySheet.Cells[range.Row, ExcelColumn.marlinFreight] = jobList[soStr].marlinFreight;
-                mySheet.Cells[range.Row, ExcelColumn.miscTooling] = jobList[soStr].miscToolingCost;
-                mySheet.Cells[range.Row, ExcelColumn.costToCure] = jobList[soStr].costToCure;
-                mySheet.Cells[range.Row, ExcelColumn.healingFactor] = jobList[soStr].healingFactor;
+                mySheet.Cells[range.Row, ExcelColumn.actualCost] = string.Format("{0:C}", jobList[soStr].amountActualCost);
+                mySheet.Cells[range.Row, ExcelColumn.actualRevenue] = string.Format("{0:C}", jobList[soStr].amountActualRevenue);
+                mySheet.Cells[range.Row, ExcelColumn.difference] = string.Format("{0:C}", jobList[soStr].difference);
+                mySheet.Cells[range.Row, ExcelColumn.grossMargin] = string.Format("{0:0.00%}",jobList[soStr].grossMargin);
+                mySheet.Cells[range.Row, ExcelColumn.unitHigh] = string.Format("{0:C}", jobList[soStr].unitHigh);
+                mySheet.Cells[range.Row, ExcelColumn.unitMed] = string.Format("{0:C}", jobList[soStr].unitMed);
+                mySheet.Cells[range.Row, ExcelColumn.unitLow] = string.Format("{0:C}", jobList[soStr].unitLow);
+                mySheet.Cells[range.Row, ExcelColumn.unitFloor] = string.Format("{0:C}", jobList[soStr].unitFloor);
+                mySheet.Cells[range.Row, ExcelColumn.freight] = string.Format("{0:C}", jobList[soStr].freight);
+                mySheet.Cells[range.Row, ExcelColumn.marlinFreight] = string.Format("{0:C}", jobList[soStr].marlinFreight);
+                mySheet.Cells[range.Row, ExcelColumn.miscTooling] = string.Format("{0:C}", jobList[soStr].miscToolingCost);
+                mySheet.Cells[range.Row, ExcelColumn.costToCure] = string.Format("{0:C}", jobList[soStr].costToCure);
+                mySheet.Cells[range.Row, ExcelColumn.healingFactor] = string.Format("{0:C}", jobList[soStr].healingFactor);
 
                 formatJobDoc(jobList[soStr], range, mySheet);
                 ConsoleWriter.WriteLine(jobList[soStr].partNumber + " | " + jobList[soStr].customerName + " Data Written to Excel.");
