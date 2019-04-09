@@ -29,7 +29,7 @@
     <MinimumRequiredVersion>2.0.1.0</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>2.0.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -60,7 +60,7 @@
     <StartupObject>JobCosting.JobCostingDriver</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>1088FF2071B4674F7B6662067DFA8D2BE06840A9</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>D5F0EC43E659195F6A8F2623DD1E8899D48F77C5</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>JobCosting_TemporaryKey.pfx</ManifestKeyFile>
@@ -158,6 +158,7 @@
     <None Include="DataSet1.xss">
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </None>
+    <None Include="JobCosting_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
