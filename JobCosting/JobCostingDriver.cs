@@ -9,6 +9,10 @@ using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 
+/// <summary>
+/// DO NOT SIGN THE APPLICATION WITH A KEY
+/// CLICKONCE WILL FAIL
+/// </summary>
 namespace JobCosting
 {
     /// <summary>

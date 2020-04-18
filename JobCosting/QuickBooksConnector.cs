@@ -16,7 +16,7 @@ namespace JobCosting
         public static OdbcConnection con { get; private set; }
         public static OdbcConnection conDSNLess { get; private set; }
         public static DataTable result_Cost { get; private set; }
-        public static DataTable result_SalesOrder { get; private set; }  
+        public static DataTable result_SalesOrder { get; private set; }
 
         /// <summary>
         /// Default Constructor
@@ -24,7 +24,7 @@ namespace JobCosting
         public QuickBooksConnector()
         {
             result_Cost = new DataTable();
-            result_SalesOrder = new DataTable();             
+            result_SalesOrder = new DataTable();
         }
 
         /// <summary>
@@ -52,21 +52,54 @@ namespace JobCosting
                 throw;
             }
 
-            // Try to Create DNSLess ODBC Connection
-            // The database name changed randomly one day.
-            // Not sure if it is a sever thing, that randomly changes.
-            // A solution could be to tunnel into the file containing the database name and extract it
+            // Try to Create DNSLess ODBC Connection   
+
             try
             {
+                // Basically QB DSN Config file
                 string fileDSN = @"\\MSW-FP1\Quickbooks\Imported Company File 7-25-17\Marlin Steel Wire Products, LLC.QBW.DSN";
-                conDSNLess = new OdbcConnection("ODBC; Driver={QB SQL Anywhere}; " +
-                    "UID=JobCosting; " +
-                    "PWD=M@rl1n; " +
-           //         "DatabaseName = 88c8bc08ff9c457aaca2375ba0478479; " +
-                    "ServerName=QB_MSW-FP1_27; " +
-                    "AutoStop=NO; Integrated = NO; " +
-                    "FILEDSN=" + fileDSN + ";" +
-                    "Debug=NO; DisableMultiRowFetch=NO; CommLinks='TCPIP{HOST=192.168.1.7:55373}'");
+
+                // Extract line from file
+                string[] lines = System.IO.File.ReadAllLines(fileDSN);
+
+                string driver = "";
+                string serverName = "";
+                string commLinks = "";
+                string databaseName = "";
+
+                // Dynamically extract config infromation from FileDSN
+                foreach (string line in lines)
+                {
+                    if (line.StartsWith("DRIVER="))
+                    {
+                        driver = line.Substring("DRIVER=".Length);
+                        continue;
+                    }
+                    if (line.StartsWith("ServerName="))
+                    {
+                        serverName = line.Substring("ServerName=".Length); ;
+                        continue;
+                    }
+                    if (line.StartsWith("CommLinks="))
+                    {
+                        commLinks = line.Substring("CommLinks=".Length); ;
+                        continue;
+                    }
+                    if (line.StartsWith("DatabaseName="))
+                    {
+                        databaseName = line.Substring("DatabaseName=".Length); ;
+                        continue;
+                    }
+                }
+
+                conDSNLess = new OdbcConnection("ODBC; Driver={" + driver + "}; " +
+                 "UID=JobCosting; " +
+                 "PWD=M@rl1n; " +
+                 "DatabaseName = " + databaseName + "; " +
+                 "ServerName=" + serverName + "; " +
+                 "AutoStop=NO; Integrated = NO; " +
+                 "FILEDSN=" + fileDSN + ";" +
+                 "Debug=NO; DisableMultiRowFetch=NO; CommLinks='" + commLinks + "'");
 
                 conDSNLess.Open(); // Open Connection, Required QB to be open
                 Console.WriteLine("Connected to QB Thru DSNLess Connection");
@@ -153,15 +186,15 @@ namespace JobCosting
 
                 Console.WriteLine("SO Table Query Started");
                 // Create SQL statement for grabbing table data
-                OdbcDataAdapter dAdapter = new OdbcDataAdapter( 
+                OdbcDataAdapter dAdapter = new OdbcDataAdapter(
                     "SELECT QBReportAdminGroup.v_lst_customer_fullname.name as 'SalesOrder', QBReportAdminGroup.v_lst_customer_fullname.full_name as 'FullName', QBReportAdminGroup.v_lst_sales_rep.initials as 'Rep'" +
-                    "FROM QBReportAdminGroup.v_lst_customer INNER JOIN QBReportAdminGroup.v_lst_customer_fullname ON QBReportAdminGroup.v_lst_customer.name = QBReportAdminGroup.v_lst_customer_fullname.name "+
+                    "FROM QBReportAdminGroup.v_lst_customer INNER JOIN QBReportAdminGroup.v_lst_customer_fullname ON QBReportAdminGroup.v_lst_customer.name = QBReportAdminGroup.v_lst_customer_fullname.name " +
                     "INNER JOIN QBReportAdminGroup.v_lst_sales_rep ON QBReportAdminGroup.v_lst_customer.sales_rep_id = QBReportAdminGroup.v_lst_sales_rep.id",
                     conDSNLess);
 
                 // Store query results into DataTable Object
                 dAdapter.Fill(result_SalesOrder);
-                     
+
                 Console.WriteLine("SO Table Filled");
                 ConsoleWriter.WriteLine("SO Table Filled");
             }
@@ -188,7 +221,7 @@ namespace JobCosting
             /// </summary>
             /// <param name="joblist"></param>
             public static void threadStoredProcedure(object job)
-            {    
+            {
                 threadStoredProcedure((SuperJob)job);
             }
 
@@ -210,8 +243,8 @@ namespace JobCosting
                     OdbcDataAdapter dAdapter = new OdbcDataAdapter(
                       "sp_report JobProfitabilityDetail " +
                       "show RowData, AmountActualCost, AmountActualRevenue, AmountDifferenceActual " +
-                      "parameters DateMacro = 'All', EntityFilterFullNames = '"+ customer + "'",
-                      con);                    
+                      "parameters DateMacro = 'All', EntityFilterFullNames = '" + customer + "'",
+                      con);
 
                     // Store query results into DataTable Object
                     dAdapter.Fill(result_StoredProcedure);
@@ -219,16 +252,16 @@ namespace JobCosting
                     // Set Primary Key
                     // Replace Null Values in RowData Column
                     // Stored Procedure $ are of type Decimal
-                    foreach(DataRow row in result_StoredProcedure.Rows)
+                    foreach (DataRow row in result_StoredProcedure.Rows)
                     {
                         if (row["RowData"] is System.DBNull)
                         {
                             row["RowData"] = "NO DATA" + result_StoredProcedure.Rows.IndexOf(row);
-                        }           
+                        }
                     }
 
                     DataColumn[] key = new DataColumn[1];
-                    key[0] = result_StoredProcedure.Columns["RowData"];        
+                    key[0] = result_StoredProcedure.Columns["RowData"];
                     result_StoredProcedure.PrimaryKey = key;
 
                     // Map data to job objects
@@ -238,7 +271,7 @@ namespace JobCosting
                 catch (OdbcException objEx)
                 {
                     Console.WriteLine(objEx.Message);
-                }                
+                }
             }
 
             /// <summary>
@@ -289,7 +322,7 @@ namespace JobCosting
             }
         }
 
-        
+
     }
 
 
