@@ -57,7 +57,7 @@ namespace JobCosting
             try
             {
                 // Basically QB DSN Config file
-                string fileDSN = @"\\MSW-FP1\Quickbooks\Imported Company File 7-25-17\Marlin Steel Wire Products, LLC.QBW.DSN";
+                string fileDSN = @"\\MSW-FP1\Quickbooks\Company File 7_24_20\Marlin Steel Wire Products, LLC.QBW.DSN";
 
                 // Extract line from file
                 string[] lines = System.IO.File.ReadAllLines(fileDSN);
